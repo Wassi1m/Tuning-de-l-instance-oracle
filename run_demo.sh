@@ -8,7 +8,7 @@ APP()  { docker exec -i $C sqlplus -s tuning/Tuning123@//localhost/FREEPDB1 @/op
 titre(){ echo; echo -e "\e[1;31m=== $* ===\e[0m"; }
 mkdir -p results
 
-titre "0. Demarrage du conteneur Oracle 23ai Free"
+titre "0. Demarrage du conteneur Oracle 26ai Free"
 docker compose up -d
 until [ "$(docker inspect -f '{{.State.Health.Status}}' $C)" = "healthy" ]; do printf '.'; sleep 5; done; echo " pret"
 

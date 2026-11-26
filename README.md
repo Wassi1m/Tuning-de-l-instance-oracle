@@ -1,6 +1,6 @@
 # Tuning de l'instance Oracle
 
-Projet d'**Administration avancée des bases de données** : diagnostiquer puis optimiser une instance **Oracle 23ai Free** (Docker) sur une base e-commerce simulée de **3,1 millions de lignes**.
+Projet d'**Administration avancée des bases de données** : diagnostiquer puis optimiser une instance **Oracle 26ai Free** (Docker) sur une base e-commerce simulée de **3,1 millions de lignes**.
 
 > Résultat : le benchmark passe de **12,25 s à 0,71 s** (**×17**) en réglant 4 éléments, sans changer de matériel.
 
@@ -8,7 +8,7 @@ Projet d'**Administration avancée des bases de données** : diagnostiquer puis 
 
 | Étape | Script | Rôle |
 |---|---|---|
-| 1. Installer | `docker-compose.yml` | Oracle 23ai Free (`gvenzl/oracle-free:23-slim`) |
+| 1. Installer | `docker-compose.yml` | Oracle 26ai Free (`gvenzl/oracle-free:23-slim`) |
 | 2. Simuler | `sql/00_setup_user.sql`, `sql/01_schema.sql`, `sql/02_data.sql` | Utilisateur `TUNING`, schéma, 3,1 M lignes |
 | 3. Dégrader | `sql/03_config_avant.sql`, `sql/03b_reset_schema.sql` | Instance « mal configurée », sans index ni stats |
 | 4. Mesurer | `sql/04_bench.sql AVANT` | 4 scénarios chronométrés + deltas `v$mystat` |
