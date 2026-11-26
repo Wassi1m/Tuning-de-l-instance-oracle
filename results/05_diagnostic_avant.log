@@ -1,0 +1,82 @@
+
+===== 1. Parametres memoire / parsing actuels =====
+
+NAME					      VALUE
+--------------------------------------------- -------------------------
+cursor_sharing				      EXACT
+db_cache_size				      0
+open_cursors				      300
+pga_aggregate_target			      10M
+result_cache_max_size			      64M
+result_cache_mode			      MANUAL
+session_cached_cursors			      100
+sga_target				      0
+shared_pool_size			      0
+
+===== 2. Ratios de sante de l'instance =====
+
+NAME					      VALUE
+--------------------------------------------- -------------------------
+Buffer cache hit ratio (%)		      98.88
+Library cache hit ratio (%)		      83.15
+Soft parse ratio (%)			      84.5
+Work areas optimal (%)			      99.36
+
+===== 3. Top 5 SQL par temps ecoule (v$sql) =====
+
+       SEC	EXECS SQL_TEXT
+---------- ---------- ----------------------------------------------------------------------
+     12.32	    1 DECLARE	v_phase VARCHAR2(10) := 'AVANT';   TYPE t_snap IS TABLE OF N
+      4.84	  300 SELECT COUNT(*), NVL(SUM(MONTANT),0) FROM COMMANDES WHERE CLIENT_ID =
+      2.12	   15 SELECT SUM(CA) FROM ( SELECT P.CATEGORIE, SUM(L.QUANTITE * L.PRIX_UNIT
+       .85	    1 SELECT MAX(RN) FROM ( SELECT ROW_NUMBER() OVER (ORDER BY PRIX_UNITAIRE
+       .46	    1 SELECT COUNT(*) FROM ( SELECT CLIENT_ID, SUM(MONTANT) S FROM COMMANDES
+
+===== 4. Requetes quasi identiques non partagees (litteraux) =====
+
+NB_CURSEURS
+-----------
+EXEMPLE
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	263
+SELECT montant FROM commandes WHERE id = 9999
+
+
+===== 5. PGA Advisor (v$pga_target_advice) =====
+
+TARGET_MB     FACTOR	HIT_PCT  OVERALLOC
+--------- ---------- ---------- ----------
+       10	   1	     47 	 2
+       12	 1.2	     47 	 2
+       14	 1.4	     47 	 2
+       16	 1.6	     47 	 2
+       18	 1.8	     47 	 2
+       20	   2	     47 	 2
+       30	   3	     47 	 2
+       40	   4	     47 	 2
+       60	   6	     47 	 2
+       80	   8	     47 	 2
+
+===== 6. SGA Advisor (v$sga_target_advice) =====
+
+    SGA_MB     FACTOR	 DB_TIME PHYS_READS
+---------- ---------- ---------- ----------
+       768	   .5	      19      20801
+      1152	  .75	      19      20801
+      1536	    1	      19      20801
+      1920	 1.25	      19      20801
+      2304	  1.5	      19      20801
+      2688	 1.75	      19      20801
+      3072	    2	      19      20801
+
+===== 7. Top evenements d'attente (hors idle) =====
+
+EVENT					      TOTAL_WAITS	 SEC
+--------------------------------------------- ----------- ----------
+direct path write temp				     1922	1.41
+db file sequential read 			     3441	 .05
+latch: shared pool				      198	 .03
+direct path read temp				     3101	 .03
+db file scattered read				      552	 .02
+control file parallel write			       11	 .02
+log file sync						8	 .02

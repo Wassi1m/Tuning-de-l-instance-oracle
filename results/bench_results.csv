@@ -1,0 +1,9 @@
+"PHASE","TEST","ELAPSED_MS","HARD_PARSES","LOGICAL_READS","TEMP_WRITES","WA_OPTIMAL","WA_ONEPASS","WA_MULTIPASS","RC_HITS"
+"AVANT","T1 Parsing (10000 requetes litterales)",3990,10042,41479,0,28,0,0,0
+"APRES","T1 Parsing (10000 requetes litterales)",140,5,40111,0,0,0,0,0
+"AVANT","T2 Tri et agregation (PGA)",1300,7,12857,11756,8,2,2,1
+"APRES","T2 Tri et agregation (PGA)",450,2,12519,0,4,0,0,0
+"AVANT","T3 Rapport repete x15 (Result Cache)",2120,5,114680,0,24,0,0,5
+"APRES","T3 Rapport repete x15 (Result Cache)",110,1,7632,0,3,0,0,14
+"AVANT","T4 Acces par client x300 (Index)",4840,4,1474274,0,0,0,0,0
+"APRES","T4 Acces par client x300 (Index)",10,1,3907,0,0,0,0,0

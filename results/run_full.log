@@ -1,0 +1,194 @@
+
+[1;31m=== 0. Demarrage du conteneur Oracle 23ai Free ===[0m
+ Container oracle-tuning  Running
+ pret
+
+[1;31m=== 3. Instance MAL configuree (etat initial) ===[0m
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+[1;31m=== 4. Benchmark AVANT tuning ===[0m
+AVANT | T1 Parsing (10000 requetes littera    3990 ms	hard_parses=10042
+temp_writes=0  logical_reads=41479  rc_hits=0
+AVANT | T2 Tri et agregation (PGA)	      1300 ms	hard_parses=7
+temp_writes=11756  logical_reads=12857	rc_hits=1
+AVANT | T3 Rapport repete x15 (Result Cach    2120 ms	hard_parses=5
+temp_writes=0  logical_reads=114680  rc_hits=5
+AVANT | T4 Acces par client x300 (Index)      4840 ms	hard_parses=4
+temp_writes=0  logical_reads=1474274  rc_hits=0
+
+[1;31m=== 5. Diagnostic de l'instance (vues V$ + advisors) ===[0m
+
+===== 1. Parametres memoire / parsing actuels =====
+
+NAME					      VALUE
+--------------------------------------------- -------------------------
+cursor_sharing				      EXACT
+db_cache_size				      0
+open_cursors				      300
+pga_aggregate_target			      10M
+result_cache_max_size			      64M
+result_cache_mode			      MANUAL
+session_cached_cursors			      100
+sga_target				      0
+shared_pool_size			      0
+
+===== 2. Ratios de sante de l'instance =====
+
+NAME					      VALUE
+--------------------------------------------- -------------------------
+Buffer cache hit ratio (%)		      98.88
+Library cache hit ratio (%)		      83.15
+Soft parse ratio (%)			      84.5
+Work areas optimal (%)			      99.36
+
+===== 3. Top 5 SQL par temps ecoule (v$sql) =====
+
+       SEC	EXECS SQL_TEXT
+---------- ---------- ----------------------------------------------------------------------
+     12.32	    1 DECLARE	v_phase VARCHAR2(10) := 'AVANT';   TYPE t_snap IS TABLE OF N
+      4.84	  300 SELECT COUNT(*), NVL(SUM(MONTANT),0) FROM COMMANDES WHERE CLIENT_ID =
+      2.12	   15 SELECT SUM(CA) FROM ( SELECT P.CATEGORIE, SUM(L.QUANTITE * L.PRIX_UNIT
+       .85	    1 SELECT MAX(RN) FROM ( SELECT ROW_NUMBER() OVER (ORDER BY PRIX_UNITAIRE
+       .46	    1 SELECT COUNT(*) FROM ( SELECT CLIENT_ID, SUM(MONTANT) S FROM COMMANDES
+
+===== 4. Requetes quasi identiques non partagees (litteraux) =====
+
+NB_CURSEURS
+-----------
+EXEMPLE
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	263
+SELECT montant FROM commandes WHERE id = 9999
+
+
+===== 5. PGA Advisor (v$pga_target_advice) =====
+
+TARGET_MB     FACTOR	HIT_PCT  OVERALLOC
+--------- ---------- ---------- ----------
+       10	   1	     47 	 2
+       12	 1.2	     47 	 2
+       14	 1.4	     47 	 2
+       16	 1.6	     47 	 2
+       18	 1.8	     47 	 2
+       20	   2	     47 	 2
+       30	   3	     47 	 2
+       40	   4	     47 	 2
+       60	   6	     47 	 2
+       80	   8	     47 	 2
+
+===== 6. SGA Advisor (v$sga_target_advice) =====
+
+    SGA_MB     FACTOR	 DB_TIME PHYS_READS
+---------- ---------- ---------- ----------
+       768	   .5	      19      20801
+      1152	  .75	      19      20801
+      1536	    1	      19      20801
+      1920	 1.25	      19      20801
+      2304	  1.5	      19      20801
+      2688	 1.75	      19      20801
+      3072	    2	      19      20801
+
+===== 7. Top evenements d'attente (hors idle) =====
+
+EVENT					      TOTAL_WAITS	 SEC
+--------------------------------------------- ----------- ----------
+direct path write temp				     1922	1.41
+db file sequential read 			     3441	 .05
+latch: shared pool				      198	 .03
+direct path read temp				     3101	 .03
+db file scattered read				      552	 .02
+control file parallel write			       11	 .02
+log file sync						8	 .02
+
+[1;31m=== 6. Tuning de l'instance + objets ===[0m
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+System altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Index created.
+
+Elapsed: 00:00:01.19
+
+Index created.
+
+Elapsed: 00:00:02.20
+
+Index created.
+
+Elapsed: 00:00:08.84
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:02.21
+
+[1;31m=== 7. Benchmark APRES tuning ===[0m
+APRES | T1 Parsing (10000 requetes littera     140 ms	hard_parses=5
+temp_writes=0  logical_reads=40111  rc_hits=0
+APRES | T2 Tri et agregation (PGA)	       450 ms	hard_parses=2
+temp_writes=0  logical_reads=12519  rc_hits=0
+APRES | T3 Rapport repete x15 (Result Cach     110 ms	hard_parses=1
+temp_writes=0  logical_reads=7632  rc_hits=14
+APRES | T4 Acces par client x300 (Index)	10 ms	hard_parses=1
+temp_writes=0  logical_reads=3907  rc_hits=0
+
+[1;31m=== 8. Rapport comparatif ===[0m
+
+================== RESULTATS DU TUNING ==================
+
+TEST					   AVANT_MS   APRES_MS GAIN	    HP_AV      HP_AP	 TMP_AV     TMP_AP	LR_AV	   LR_AP RC_HITS_AP
+---------------------------------------- ---------- ---------- ------- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+T1 Parsing (10000 requetes litterales)	       3990	   140 28.5x	    10042	   5	      0 	 0	41479	   40111	  0
+T2 Tri et agregation (PGA)		       1300	   450 2.9x		7	   2	  11756 	 0	12857	   12519	  0
+T3 Rapport repete x15 (Result Cache)	       2120	   110 19.3x		5	   1	      0 	 0     114680	    7632	 14
+T4 Acces par client x300 (Index)	       4840	    10 484x		4	   1	      0 	 0    1474274	    3907	  0
+
+TOTAL
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TOTAL : 12250 ms -> 710 ms  (gain global x17.3)
+"PHASE","TEST","ELAPSED_MS","HARD_PARSES","LOGICAL_READS","TEMP_WRITES","WA_OPTIMAL","WA_ONEPASS","WA_MULTIPASS","RC_HITS"
+"AVANT","T1 Parsing (10000 requetes litterales)",3990,10042,41479,0,28,0,0,0
+"APRES","T1 Parsing (10000 requetes litterales)",140,5,40111,0,0,0,0,0
+"AVANT","T2 Tri et agregation (PGA)",1300,7,12857,11756,8,2,2,1
+"APRES","T2 Tri et agregation (PGA)",450,2,12519,0,4,0,0,0
+"AVANT","T3 Rapport repete x15 (Result Cache)",2120,5,114680,0,24,0,0,5
+"APRES","T3 Rapport repete x15 (Result Cache)",110,1,7632,0,3,0,0,14
+"AVANT","T4 Acces par client x300 (Index)",4840,4,1474274,0,0,0,0,0
+"APRES","T4 Acces par client x300 (Index)",10,1,3907,0,0,0,0,0

@@ -1,0 +1,18 @@
+Generation des clients (100 000)...
+Elapsed: 00:00:15.81
+Elapsed: 00:00:00.21
+Generation des produits (5 000)...
+Elapsed: 00:00:00.12
+Elapsed: 00:00:00.16
+Generation des commandes (1 000 000)...
+Elapsed: 00:00:09.20
+Elapsed: 00:00:00.04
+Generation des lignes de commande (2 000 000)...
+Elapsed: 00:00:08.25
+Elapsed: 00:00:00.02
+Elapsed: 00:00:00.28
+
+VOLUMES
+--------------------------------------------------------------------------------
+clients=100000	produits=5000  commandes=1000000  lignes=2000000
+Elapsed: 00:00:00.07

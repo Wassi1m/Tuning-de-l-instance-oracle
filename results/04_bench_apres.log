@@ -1,0 +1,8 @@
+APRES | T1 Parsing (10000 requetes littera     140 ms	hard_parses=5
+temp_writes=0  logical_reads=40111  rc_hits=0
+APRES | T2 Tri et agregation (PGA)	       450 ms	hard_parses=2
+temp_writes=0  logical_reads=12519  rc_hits=0
+APRES | T3 Rapport repete x15 (Result Cach     110 ms	hard_parses=1
+temp_writes=0  logical_reads=7632  rc_hits=14
+APRES | T4 Acces par client x300 (Index)	10 ms	hard_parses=1
+temp_writes=0  logical_reads=3907  rc_hits=0
